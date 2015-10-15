@@ -1,22 +1,24 @@
-package edu.kai.opencv_labs.ch10;
+package ch10;
 
-import edu.kai.opencv_labs.core.ImageCanvas;
+import core.ImageCanvas;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.highgui.Highgui;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+
+import static org.opencv.core.Core.minMaxLoc;
 
 public class GrayImageRampScalingContrast extends Thread {
 
-    public static String IMAGE_PATH = "img/1.bmp";
+    public static String IMAGE_PATH = "img/1111.JPG";
 
     private final int MAX_BRIGHTNESS = 255;
     private final int MIN_BRIGHTNESS = 0;
@@ -44,11 +46,11 @@ public class GrayImageRampScalingContrast extends Thread {
     @Override
     public void run() {
         try {
-            originalGrayImage = Imgcodecs.imread(IMAGE_PATH, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
-            Imgcodecs.imencode(".jpg", originalGrayImage, matOfByte);
+            originalGrayImage = Highgui.imread(IMAGE_PATH, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+            Highgui.imencode(".jpg", originalGrayImage, matOfByte);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(matOfByte.toArray()));
 
-            Map<JSlider, String> sliders = new HashMap<>();
+            ArrayList<JSlider> sliders = new ArrayList<>();
             slider1 = new JSlider(MIN_BRIGHTNESS, (int) (MAX_BRIGHTNESS * slidersRate), (int) (1 * slidersRate));
             slider2 = new JSlider(MIN_BRIGHTNESS, (int) (MAX_BRIGHTNESS * slidersRate), (int) (1 * slidersRate));
             slider3 = new JSlider(MIN_BRIGHTNESS, (int) (MAX_BRIGHTNESS * slidersRate), (int) (1 * slidersRate));
@@ -57,12 +59,13 @@ public class GrayImageRampScalingContrast extends Thread {
             slider2.addChangeListener(e -> update());
             slider3.addChangeListener(e -> update());
             slider4.addChangeListener(e -> update());
-            sliders.put(slider1, "1");
-            sliders.put(slider2, "2");
-            sliders.put(slider3, "3");
-            sliders.put(slider4, "4");
+            sliders.add(slider1);
+            sliders.add(slider2);
+            sliders.add(slider3);
+            sliders.add(slider4);
 
             canvas = new ImageCanvas("GrayImageRampScalingContrast", image, sliders);
+            canvas.setVisible(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,20 +74,24 @@ public class GrayImageRampScalingContrast extends Thread {
     public Mat doRampScalingContrast(Mat grayImage, double ratio1, double ratio2, double ratio3, double ratio4) {
         Mat result = grayImage.clone();
         Size size = grayImage.size();
+//
+//        double max = MIN_BRIGHTNESS;
+//        double min = MAX_BRIGHTNESS;
+//        for (int y = 0; y < size.height; y++) {
+//            for (int x = 0; x < size.width; x++) {
+//                double[] pixels = grayImage.get(y, x);
+//                if (pixels[0] > max) {
+//                    max = pixels[0];
+//                }
+//                if (pixels[0] < min) {
+//                    min = pixels[0];
+//                }
+//            }
+//        }
 
-        double max = MIN_BRIGHTNESS;
-        double min = MAX_BRIGHTNESS;
-        for (int y = 0; y < size.height; y++) {
-            for (int x = 0; x < size.width; x++) {
-                double[] pixels = grayImage.get(y, x);
-                if (pixels[0] > max) {
-                    max = pixels[0];
-                }
-                if (pixels[0] < min) {
-                    min = pixels[0];
-                }
-            }
-        }
+        Core.MinMaxLocResult minMaxLocResult = minMaxLoc(grayImage);
+        double min = minMaxLocResult.minVal;
+        double max = minMaxLocResult.maxVal;
 
         double a, b;
         for (int y = 0; y < size.height; y++) {
@@ -114,7 +121,7 @@ public class GrayImageRampScalingContrast extends Thread {
         double ratio2 = slider2.getValue() / slidersRate;
         double ratio3 = slider3.getValue() / slidersRate;
         double ratio4 = slider4.getValue() / slidersRate;
-        Imgcodecs.imencode(".jpg", doRampScalingContrast(originalGrayImage, ratio1, ratio2, ratio3, ratio4), matOfByte);
+        Highgui.imencode(".jpg", doRampScalingContrast(originalGrayImage, ratio1, ratio2, ratio3, ratio4), matOfByte);
         try {
             canvas.setIcon(ImageIO.read(new ByteArrayInputStream(matOfByte.toArray())));
         } catch (Exception ignore) {/* nop */}
