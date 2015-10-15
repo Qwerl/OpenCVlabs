@@ -1,16 +1,17 @@
-package ch8;
+package edu.kai.opencv_labs.ch8;
 
-import core.ImageCanvas;
+import edu.kai.opencv_labs.core.ImageCanvas;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GrayImageCutoffLuminance extends Thread {
 
@@ -42,20 +43,19 @@ public class GrayImageCutoffLuminance extends Thread {
     @Override
     public void run() {
         try {
-            originalGrayImage = Highgui.imread(IMAGE_PATH, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            Highgui.imencode(".bmp", originalGrayImage, matOfByte);
+            originalGrayImage = Imgcodecs.imread(IMAGE_PATH, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+            Imgcodecs.imencode(".bmp", originalGrayImage, matOfByte);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(matOfByte.toArray()));
 
-            ArrayList<JSlider> sliders = new ArrayList<>();
+            Map<JSlider, String> sliders = new HashMap<>();
             sliderMin = new JSlider(MIN_BRIGHTNESS, (int) (MAX_BRIGHTNESS * slidersRate), (1 * MIN_BRIGHTNESS));
             sliderMax = new JSlider(MIN_BRIGHTNESS, (int) (MAX_BRIGHTNESS * slidersRate), (1 * MAX_BRIGHTNESS));
             sliderMin.addChangeListener(e -> update());
             sliderMax.addChangeListener(e -> update());
-            sliders.add(sliderMin);
-            sliders.add(sliderMax);
+            sliders.put(sliderMin, "Min");
+            sliders.put(sliderMax, "Max");
 
             canvas = new ImageCanvas("GrayImageCutoffLuminance", image, sliders);
-            canvas.setVisible(true);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,9 +81,9 @@ public class GrayImageCutoffLuminance extends Thread {
     }
 
     public void update() {
-        double min = sliderMin.getValue()/slidersRate;
-        double max = sliderMax.getValue()/slidersRate;
-        Highgui.imencode(".bmp", doCutoffLuminance(originalGrayImage, min, max), matOfByte);
+        double min = sliderMin.getValue() / slidersRate;
+        double max = sliderMax.getValue() / slidersRate;
+        Imgcodecs.imencode(".bmp", doCutoffLuminance(originalGrayImage, min, max), matOfByte);
         try {
             canvas.setIcon(ImageIO.read(new ByteArrayInputStream(matOfByte.toArray())));
         } catch (Exception ignore) {/* nop */}

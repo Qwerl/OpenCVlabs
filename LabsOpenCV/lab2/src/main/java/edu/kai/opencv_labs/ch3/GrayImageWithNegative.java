@@ -1,18 +1,17 @@
-package ch3;
+package edu.kai.opencv_labs.ch3;
 
-import core.ImageCanvas;
+import edu.kai.opencv_labs.core.ImageCanvas;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Scalar;
-import org.opencv.highgui.Highgui;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GrayImageWithNegative extends Thread {
 
@@ -31,10 +30,9 @@ public class GrayImageWithNegative extends Thread {
     public void run() {
         try {
             MatOfByte matOfByte = new MatOfByte();
-            Highgui.imencode(".bmp", doNegative(Highgui.imread(IMAGE_PATH, Highgui.CV_LOAD_IMAGE_GRAYSCALE)), matOfByte);
+            Imgcodecs.imencode(".bmp", doNegative(Imgcodecs.imread(IMAGE_PATH, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE)), matOfByte);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(matOfByte.toArray()));
-            ImageCanvas canvas = new ImageCanvas("GrayImageWithNegative", image, new ArrayList<JSlider>());
-            canvas.setVisible(true);
+            ImageCanvas canvas = new ImageCanvas("GrayImageWithNegative", image, new HashMap<>());
         } catch (IOException e) {
             e.printStackTrace();
         }

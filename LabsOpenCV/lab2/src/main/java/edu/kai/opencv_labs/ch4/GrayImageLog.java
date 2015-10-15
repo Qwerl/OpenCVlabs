@@ -1,16 +1,17 @@
-package ch4;
+package edu.kai.opencv_labs.ch4;
 
-import core.ImageCanvas;
+import edu.kai.opencv_labs.core.ImageCanvas;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GrayImageLog extends Thread {
 
@@ -37,17 +38,16 @@ public class GrayImageLog extends Thread {
     @Override
     public void run() {
         try {
-            originalGrayImage = Highgui.imread(IMAGE_PATH, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            Highgui.imencode(".bmp", originalGrayImage, matOfByte);
+            originalGrayImage = Imgcodecs.imread(IMAGE_PATH, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+            Imgcodecs.imencode(".bmp", originalGrayImage, matOfByte);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(matOfByte.toArray()));
 
-            ArrayList<JSlider> sliders = new ArrayList<>();
+            Map<JSlider, String> sliders = new HashMap<>();
             slider = new JSlider(0, (int) (LOG_MAX_RATIO * slidersRate), (int) (1 * slidersRate));
             slider.addChangeListener(e -> update());
-            sliders.add(slider);
-
+            sliders.put(slider, "LOG RATIO");
             canvas = new ImageCanvas("GrayImageLog", image, sliders);
-            canvas.setVisible(true);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,7 +69,7 @@ public class GrayImageLog extends Thread {
 
     public void update() {
         double currentContrastRatio = slider.getValue() / slidersRate;
-        Highgui.imencode(".bmp", doLog(originalGrayImage, currentContrastRatio), matOfByte);
+        Imgcodecs.imencode(".bmp", doLog(originalGrayImage, currentContrastRatio), matOfByte);
         try {
             canvas.setIcon(ImageIO.read(new ByteArrayInputStream(matOfByte.toArray())));
         } catch (Exception ignore) {/* nop */}

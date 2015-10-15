@@ -1,23 +1,25 @@
-package ch5;
+package edu.kai.opencv_labs.ch7;
 
-import core.ImageCanvas;
+import edu.kai.opencv_labs.core.ImageCanvas;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class GrayImagePow extends Thread {
+public class GrayImageThreshold extends Thread {
 
     public static String IMAGE_PATH = "img/1.bmp";
 
-    private final double POW_MAX_RATIO = 2.0;
+    private final int MAX_BRIGHTNESS = 255;
+    private final int MIN_BRIGHTNESS = 0;
 
     private Mat originalGrayImage = new MatOfByte();
     private MatOfByte matOfByte = new MatOfByte();
@@ -26,11 +28,11 @@ public class GrayImagePow extends Thread {
     private ImageCanvas canvas;
     private JSlider slider;
 
-    public GrayImagePow() {
+    public GrayImageThreshold() {
         run();
     }
 
-    public GrayImagePow(String path) {
+    public GrayImageThreshold(String path) {
         IMAGE_PATH = path;
         run();
     }
@@ -38,30 +40,34 @@ public class GrayImagePow extends Thread {
     @Override
     public void run() {
         try {
-            originalGrayImage = Highgui.imread(IMAGE_PATH, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            Highgui.imencode(".jpg", originalGrayImage, matOfByte);
+            originalGrayImage = Imgcodecs.imread(IMAGE_PATH, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+            Imgcodecs.imencode(".bmp", originalGrayImage, matOfByte);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(matOfByte.toArray()));
 
-            ArrayList<JSlider> sliders = new ArrayList<>();
-            slider = new JSlider(0, (int) (POW_MAX_RATIO * slidersRate), (int) (1 * slidersRate));
+            Map<JSlider, String> sliders = new HashMap<>();
+            slider = new JSlider(MIN_BRIGHTNESS, (int) (MAX_BRIGHTNESS * slidersRate), (int) (1 * slidersRate));
             slider.addChangeListener(e -> update());
-            sliders.add(slider);
+            sliders.put(slider, "BRIGHTNESS");
 
-            canvas = new ImageCanvas("GrayImagePow", image, sliders);
-            canvas.setVisible(true);
+            canvas = new ImageCanvas("GrayImageThreshold", image, sliders);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Mat doPow(Mat grayImage, double powRatio) {
+    public Mat doThreshold(Mat grayImage, double brightnessThreshold) {
         Mat result = grayImage.clone();
         Size size = grayImage.size();
 
         for (int y = 0; y < size.height; y++) {
             for (int x = 0; x < size.width; x++) {
                 double[] pixels = grayImage.get(y, x);
-                pixels[0] = Math.pow(pixels[0], powRatio);
+                if (pixels[0] >= brightnessThreshold) {
+                    pixels[0] = MAX_BRIGHTNESS;
+                }
+                if (pixels[0] < brightnessThreshold) {
+                    pixels[0] = MIN_BRIGHTNESS;
+                }
                 result.put(y, x, pixels);
             }
         }
@@ -69,8 +75,8 @@ public class GrayImagePow extends Thread {
     }
 
     public void update() {
-        double currentContrastRatio = slider.getValue() / slidersRate;
-        Highgui.imencode(".bmp", doPow(originalGrayImage, currentContrastRatio), matOfByte);
+        double currentBrightnessThreshold = slider.getValue() / slidersRate;
+        Imgcodecs.imencode(".bmp", doThreshold(originalGrayImage, currentBrightnessThreshold), matOfByte);
         try {
             canvas.setIcon(ImageIO.read(new ByteArrayInputStream(matOfByte.toArray())));
         } catch (Exception ignore) {/* nop */}

@@ -1,17 +1,18 @@
-package ch6;
+package edu.kai.opencv_labs.ch6;
 
-import core.ImageCanvas;
+import edu.kai.opencv_labs.core.ImageCanvas;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GrayImagePiecewiseLinear extends Thread {
 
@@ -42,11 +43,11 @@ public class GrayImagePiecewiseLinear extends Thread {
     @Override
     public void run() {
         try {
-            originalGrayImage = Highgui.imread(IMAGE_PATH, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-            Highgui.imencode(".bmp", originalGrayImage, matOfByte);
+            originalGrayImage = Imgcodecs.imread(IMAGE_PATH, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+            Imgcodecs.imencode(".bmp", originalGrayImage, matOfByte);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(matOfByte.toArray()));
 
-            ArrayList<JSlider> sliders = new ArrayList<>();
+            Map<JSlider, String> sliders = new HashMap<>();
             slider1 = new JSlider(0, (int) (MAX_RATIO * slidersRate), (int) (1 * slidersRate));
             slider2 = new JSlider(0, (int) (MAX_RATIO * slidersRate), (int) (1 * slidersRate));
             slider3 = new JSlider(0, (int) (MAX_RATIO * slidersRate), (int) (1 * slidersRate));
@@ -55,12 +56,11 @@ public class GrayImagePiecewiseLinear extends Thread {
             slider2.addChangeListener(e -> update());
             slider3.addChangeListener(e -> update());
             slider4.addChangeListener(e -> update());
-            sliders.add(slider1);
-            sliders.add(slider2);
-            sliders.add(slider3);
-            sliders.add(slider4);
+            sliders.put(slider1, "1");
+            sliders.put(slider2, "2");
+            sliders.put(slider3, "3");
+            sliders.put(slider4, "4");
             canvas = new ImageCanvas("GrayImagePiecewiseLinear", image, sliders);
-            canvas.setVisible(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,7 +89,7 @@ public class GrayImagePiecewiseLinear extends Thread {
         double ratio2 = slider2.getValue() / slidersRate;
         double ratio3 = slider3.getValue() / slidersRate;
         double ratio4 = slider4.getValue() / slidersRate;
-        Highgui.imencode(".bmp", doPow(originalGrayImage, ratio1, ratio2, ratio3, ratio4), matOfByte);
+        Imgcodecs.imencode(".bmp", doPow(originalGrayImage, ratio1, ratio2, ratio3, ratio4), matOfByte);
         try {
             canvas.setIcon(ImageIO.read(new ByteArrayInputStream(matOfByte.toArray())));
         } catch (Exception ignore) {/* nop */}

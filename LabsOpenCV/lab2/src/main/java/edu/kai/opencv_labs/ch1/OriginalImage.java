@@ -1,17 +1,17 @@
-package ch1;
+package edu.kai.opencv_labs.ch1;
 
-import core.ImageCanvas;
+import edu.kai.opencv_labs.core.ImageCanvas;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OriginalImage extends Thread {
 
     public static String IMAGE_PATH = "img/1.bmp";
+    private ImageCanvas canvas;
 
     public OriginalImage() {
         run();
@@ -27,8 +27,7 @@ public class OriginalImage extends Thread {
         try {
             File input = new File(IMAGE_PATH);
             BufferedImage image = ImageIO.read(input);
-            ImageCanvas canvas = new ImageCanvas("Original", image, new ArrayList<JSlider>());
-            canvas.setVisible(true);
+            canvas = new ImageCanvas("Original", image, new HashMap<>());
         } catch (IOException e) {
             e.printStackTrace();
         }

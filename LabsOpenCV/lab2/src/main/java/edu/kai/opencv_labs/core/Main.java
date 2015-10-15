@@ -1,16 +1,16 @@
-package core;
+package edu.kai.opencv_labs.core;
 
-import ch1.GrayImage;
-import ch2.GrayImageWithContrast;
-import ch1.OriginalImage;
-import ch10.GrayImageRampScalingContrast;
-import ch3.GrayImageWithNegative;
-import ch4.GrayImageLog;
-import ch5.GrayImagePow;
-import ch6.GrayImagePiecewiseLinear;
-import ch7.GrayImageThreshold;
-import ch8.GrayImageCutoffLuminance;
-import ch9.GrayImageContrastZoom;
+import edu.kai.opencv_labs.ch1.GrayImage;
+import edu.kai.opencv_labs.ch2.GrayImageWithContrast;
+import edu.kai.opencv_labs.ch1.OriginalImage;
+import edu.kai.opencv_labs.ch10.GrayImageRampScalingContrast;
+import edu.kai.opencv_labs.ch3.GrayImageWithNegative;
+import edu.kai.opencv_labs.ch4.GrayImageLog;
+import edu.kai.opencv_labs.ch5.GrayImagePow;
+import edu.kai.opencv_labs.ch6.GrayImagePiecewiseLinear;
+import edu.kai.opencv_labs.ch7.GrayImageThreshold;
+import edu.kai.opencv_labs.ch8.GrayImageCutoffLuminance;
+import edu.kai.opencv_labs.ch9.GrayImageContrastZoom;
 import org.opencv.core.Core;
 
 import javax.swing.*;
