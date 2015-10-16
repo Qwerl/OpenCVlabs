@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class ImageCanvas {
@@ -53,6 +54,13 @@ public class ImageCanvas {
         slider.setMajorTickSpacing(slider.getMaximum() / 5);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
+
+        Hashtable dictionary = new Hashtable<String, String>();
+        for (int i = 0; i <= slider.getMaximum(); i = i + (slider.getMaximum()) / 5) {
+            dictionary.put(i, new JLabel((i / 100.0) + ""));
+        }
+        slider.setLabelTable(dictionary);
+
         sliderWithLabel.add(slider);
 
         panel.add(sliderWithLabel);

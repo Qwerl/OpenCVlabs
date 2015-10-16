@@ -24,7 +24,7 @@ public class GrayImageContrastZoom extends Thread {
     private Mat originalGrayImage = new MatOfByte();
     private MatOfByte matOfByte = new MatOfByte();
 
-    private double slidersRate = 200.0;
+    private double slidersRate = 100.0;
     private ImageCanvas canvas;
     private JSlider sliderMin;
     private JSlider sliderMax;
