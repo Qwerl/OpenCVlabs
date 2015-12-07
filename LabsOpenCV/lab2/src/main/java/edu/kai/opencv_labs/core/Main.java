@@ -1,9 +1,9 @@
 package edu.kai.opencv_labs.core;
 
 import edu.kai.opencv_labs.ch1.GrayImage;
-import edu.kai.opencv_labs.ch2.GrayImageWithContrast;
 import edu.kai.opencv_labs.ch1.OriginalImage;
 import edu.kai.opencv_labs.ch10.GrayImageRampScalingContrast;
+import edu.kai.opencv_labs.ch2.GrayImageWithContrast;
 import edu.kai.opencv_labs.ch3.GrayImageWithNegative;
 import edu.kai.opencv_labs.ch4.GrayImageLog;
 import edu.kai.opencv_labs.ch5.GrayImagePow;

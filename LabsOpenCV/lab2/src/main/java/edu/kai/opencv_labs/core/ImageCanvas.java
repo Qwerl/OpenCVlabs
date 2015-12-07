@@ -1,15 +1,9 @@
 package edu.kai.opencv_labs.core;
 
-import org.opencv.core.Core;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -31,7 +25,7 @@ public class ImageCanvas {
         panel.setLayout(new GridLayout(0, 1));
         panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        sliders.forEach((slider, label) -> addSliderWithLabel(slider, label));
+        sliders.forEach(this::addSliderWithLabel);
 
         imageLabel = new JLabel();
         imageLabel.setIcon(new ImageIcon(image));
@@ -64,32 +58,6 @@ public class ImageCanvas {
         sliderWithLabel.add(slider);
 
         panel.add(sliderWithLabel);
-    }
-
-    public static void main(String[] args) throws IOException, ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-            if ("Metal".equals(info.getName())) {
-                UIManager.setLookAndFeel(info.getClassName());
-                break;
-            }
-        }
-
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    File input = new File("img/1.bmp");
-                    BufferedImage image = ImageIO.read(input);
-                    HashMap<JSlider, String> sliders = new HashMap<>();
-                    sliders.put(new JSlider(0, 100, 20), "hello1");
-                    sliders.put(new JSlider(0, 100, 70), "hello2");
-
-                    new ImageCanvas("hello", image, sliders);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     public void setIcon(Image image) {

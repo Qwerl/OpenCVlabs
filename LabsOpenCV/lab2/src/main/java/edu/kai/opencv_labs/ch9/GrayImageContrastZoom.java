@@ -26,6 +26,7 @@ public class GrayImageContrastZoom extends Thread {
 
     private double slidersRate = 100.0;
     private ImageCanvas canvas;
+
     private JSlider sliderMin;
     private JSlider sliderMax;
 
@@ -85,8 +86,7 @@ public class GrayImageContrastZoom extends Thread {
                     a = (ratioMax - ratioMin) / (max - min);
                     b = ((ratioMin * max) - (ratioMax * min)) / (max - min);
                     pixels[0] = (a * pixels[0] + b);
-                }
-                if (pixels[0] < ratioMin || pixels[0] > ratioMax) {
+                } else {
                     pixels[0] = MIN_BRIGHTNESS;
                 }
                 result.put(y, x, pixels);
